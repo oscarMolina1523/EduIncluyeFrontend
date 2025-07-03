@@ -24,7 +24,7 @@ const LoginScreen = () => {
       <View style={styles.container}>
         <Image
           source={{
-            uri: "https://reactnative.dev/docs/assets/p_cat2.png",
+            uri: "https://i.ibb.co/LyxKpZD/logo.png",
           }}
           style={{
             width: "100%",
@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "100%",
+    height: "auto",
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
