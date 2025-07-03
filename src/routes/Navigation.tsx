@@ -28,14 +28,14 @@ const Navigation = () => {
           name="Login"
           component={LoginScreen}
           options={{
-            title: "Inicio de sesión",
+            headerShown: false,
           }}
         />
         <Stack.Screen
           name="Register"
           component={RegisterScreen}
           options={{
-            title: "Registrarse",
+            headerShown: false,
           }}
         />
         <Stack.Screen
