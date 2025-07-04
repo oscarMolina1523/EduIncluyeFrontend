@@ -14,11 +14,10 @@ const HomeScreen = () => {
           flex: 1,
           flexDirection: "row",
           gap: 12,
-          backgroundColor: "#FFFF00",
         }}
       >
         <WebView
-          style={{ width: "100%", maxHeight: "auto" }}
+          style={{ width: "100%", maxHeight: "auto",backgroundColor: '#ffff'}}
           javaScriptEnabled={true}
           domStorageEnabled={true}
           allowsInlineMediaPlayback={true}
@@ -27,7 +26,7 @@ const HomeScreen = () => {
             uri: "https://www.youtube.com/embed/wVuDj9V3olo?autoplay=1&mute=1&controls=0&loop=1&playlist=wVuDj9V3olo",
           }}
         />
-        <View style={{ maxWidth: "60%", flex: 1, flexDirection: "column" }}>
+        <View style={{ maxWidth: "60%", flex: 1, flexDirection: "column", padding:8 }}>
           <Text style={styles.subtitle}>1.Alfabeto Manual</Text>
           <Text style={{color:"#808080"}}>
             La presente categoría pretende enseñar el alfabeto manual del
