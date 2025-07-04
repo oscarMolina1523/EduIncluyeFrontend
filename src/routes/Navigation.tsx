@@ -35,7 +35,7 @@ const Navigation = () => {
           name="Register"
           component={RegisterScreen}
           options={{
-            headerShown: false,
+            title:"Registrarse"
           }}
         />
         <Stack.Screen
