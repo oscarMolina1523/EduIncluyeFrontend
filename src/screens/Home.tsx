@@ -1,43 +1,41 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import WebView from "react-native-webview";
-import YoutubePlayer from "react-native-youtube-iframe";
 
 const HomeScreen = () => {
-  const [playing, setPlaying] = useState(false);
-  const [muted, setMuted] = useState(true);
-
-  // Forzar autoplay después de 1 segundo
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setPlaying(true);
-    }, 1000);
-    return () => clearTimeout(timeout);
-  }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Categorias</Text>
-      {/* <YoutubePlayer
-        height={200}
-        play={playing}
-        videoId="wVuDj9V3olo"
-        onReady={() => setPlaying(true)} // Activa play cuando el player esté listo
-        initialPlayerParams={{
-          mute: muted,
-          controls: true,
+      <View
+        style={{
+          width: "100%",
+          maxHeight: 220,
+          flex: 1,
+          flexDirection: "row",
+          gap: 12,
+          backgroundColor: "#FFFF00",
         }}
-      /> */}
-      <WebView
-        style={{ height: 200 }}
-        javaScriptEnabled={true}
-        domStorageEnabled={true}
-        allowsInlineMediaPlayback={true}
-        mediaPlaybackRequiresUserAction={false}
-        source={{
-          uri: "https://www.youtube.com/embed/wVuDj9V3olo?autoplay=1&mute=1&controls=0&loop=1&playlist=wVuDj9V3olo",
-        }}
-      />
+      >
+        <WebView
+          style={{ width: "100%", maxHeight: "auto" }}
+          javaScriptEnabled={true}
+          domStorageEnabled={true}
+          allowsInlineMediaPlayback={true}
+          mediaPlaybackRequiresUserAction={false}
+          source={{
+            uri: "https://www.youtube.com/embed/wVuDj9V3olo?autoplay=1&mute=1&controls=0&loop=1&playlist=wVuDj9V3olo",
+          }}
+        />
+        <View style={{ maxWidth: "60%", flex: 1, flexDirection: "column" }}>
+          <Text style={styles.subtitle}>1.Alfabeto Manual</Text>
+          <Text style={{color:"#808080"}}>
+            La presente categoría pretende enseñar el alfabeto manual del
+            Lenguaje de Señas, facilitando el aprendizaje de cada letra a través
+            de señas claras.{" "}
+          </Text>
+        </View>
+      </View>
     </View>
   );
 };
@@ -56,6 +54,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "left",
+    color: "black",
+  },
+  subtitle: {
+    fontSize: 14,
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "left",
