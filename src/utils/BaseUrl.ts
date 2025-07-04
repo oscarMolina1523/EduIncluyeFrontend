@@ -1,1 +1,1 @@
-export const baseUrl="https://edu-incluye-backend.vercel.app/";
+export const baseUrl="https://edu-incluye-backend.vercel.app";
