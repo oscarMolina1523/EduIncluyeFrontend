@@ -1,5 +1,5 @@
 export default class Token {
-    private token:string;
+    token:string;
     constructor(token = '') {
         this.token = token;
     }

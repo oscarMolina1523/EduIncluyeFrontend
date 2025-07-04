@@ -14,7 +14,7 @@ export default class UserModel {
     const id = String(json['id']) || "";
     const name = String(json['name'] || '');
     const email = String(json['email'] || '');
-    const isActive = Boolean(json['isActive'] || false);
+    const isActive = json['isActive'] !== undefined ? Boolean(json['isActive']) : false;
     return new UserModel(id, name, email, isActive);
   }
 }
