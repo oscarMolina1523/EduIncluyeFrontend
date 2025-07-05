@@ -5,7 +5,7 @@ export default class Token {
     }
 
     static fromJson(json:any) {
-        const instance = new Token(json.token || '');
+        const instance = new Token(json.token || json);
         return instance;
     }
 }

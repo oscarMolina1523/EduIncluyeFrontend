@@ -71,11 +71,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const signIn = async (username: string, password: string) => {
     try {
       const response = await usersService.signIn(username, password);
-      setToken(response.token);
-      await AsyncStorage.setItem("authToken", response.token); // GUARDA DIRECTAMENTE
-      console.log("Token recibido:", response);
-      console.log("Token recibido:", response.token);
-      navigation.navigate("Home");
+      await AsyncStorage.setItem("authToken", response.token); // Guarda primero
+      setToken(response.token); // Luego actualiza estado
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Home" }],
+      });
     } catch (err) {
       console.error("Login error", err);
     }
@@ -86,7 +87,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(null);
       setToken(null);
       await AsyncStorage.removeItem("authToken");
-      navigation.navigate("Login");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Login" }],
+      });
     } catch (error) {
       console.error("Logout error", error);
     }
