@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserModel from '../models/UserModel';
 import UsersService from '../services/AuthService';
-import { storage } from '../utils/Storage';
 import { RootStackParamList } from '../routes/Navigation';
 
 interface AuthContextProps {
   isSignedIn: boolean;
-  signIn: (data: { username: string; password: string }) => Promise<void>;
+  signIn: (username: string, password: string) => Promise<void>;
   logout: () => void;
   user: UserModel | null;
   token: string | null;
@@ -33,41 +33,58 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   useEffect(() => {
-    const loadToken = () => {
-      const storedToken = storage.getString('authToken');
-      if (storedToken) {
-        setToken(storedToken);
+    const loadToken = async () => {
+      try {
+        const storedToken = await AsyncStorage.getItem('authToken');
+        if (storedToken) {
+          setToken(storedToken);
+          // Opcional: cargar user si lo guardas o fetch profile aquí
+        }
+      } catch (error) {
+        console.error("Error loading token", error);
       }
     };
     loadToken();
   }, []);
 
   useEffect(() => {
-    if (token) {
-      storage.set('authToken', token);
-    } else {
-      storage.delete('authToken');
-    }
+    const saveToken = async () => {
+      try {
+        if (token) {
+          await AsyncStorage.setItem('authToken', token);
+        } else {
+          await AsyncStorage.removeItem('authToken');
+        }
+      } catch (error) {
+        console.error("Error saving token", error);
+      }
+    };
+    saveToken();
   }, [token]);
 
-  const signIn = async (data: { username: string; password: string }) => {
+  const signIn = async (username: string, password: string) => {
     try {
-      const response = await usersService.signIn(data.username, data.password);
+      const response = await usersService.signIn(username, password);
       setToken(response.token);
+      // setUser(response.user); // si tu backend devuelve user
       navigation.navigate('Home');
     } catch (err) {
-      console.error(err);
+      console.error("Login error", err);
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    storage.delete('authToken');
-    navigation.navigate('Login');
+  const logout = async () => {
+    try {
+      setUser(null);
+      setToken(null);
+      await AsyncStorage.removeItem('authToken');
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error("Logout error", error);
+    }
   };
 
-  const isSignedIn = user !== null;
+  const isSignedIn = token !== null;
 
   return (
     <AuthContext.Provider value={{ isSignedIn, signIn, logout, user, token }}>

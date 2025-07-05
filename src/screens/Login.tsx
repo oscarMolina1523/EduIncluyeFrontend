@@ -11,10 +11,30 @@ import {
   Platform,
 } from "react-native";
 import { RootStackParamList } from "../routes/Navigation";
+import { useAuth } from "../context/AuthContext";
+import { useRef } from "react";
 
 const LoginScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList, "Login">>();
+
+  const auth = useAuth();
+  const emailRef = useRef<string>("");
+  const passwordRef = useRef<string>("");
+
+  const handleLogin = async() => {
+
+    const email = emailRef.current;
+    const password = passwordRef.current;
+
+    if (!email || !password) {
+      alert("Por favor ingrese email y contraseña");
+      return;
+    }
+
+    auth.signIn(email, password);
+  };
+
 
   return (
     <KeyboardAvoidingView
@@ -40,6 +60,8 @@ const LoginScreen = () => {
             keyboardType="email-address"
             style={styles.input}
             placeholder="ejemplo@gmail.com"
+            onChangeText={(text) => (emailRef.current = text)}
+            
           />
         </View>
         <View>
@@ -48,10 +70,11 @@ const LoginScreen = () => {
             secureTextEntry={true}
             style={styles.input}
             placeholder="password"
+            onChangeText={(text) => (passwordRef.current = text)}
           />
         </View>
         <View>
-          <TouchableOpacity style={styles.button}  onPress={() => navigation.navigate("Home")}>
+          <TouchableOpacity style={styles.button}  onPress={handleLogin}>
             <Text style={styles.buttonText}>Iniciar Sesion</Text>
           </TouchableOpacity>
         </View>
