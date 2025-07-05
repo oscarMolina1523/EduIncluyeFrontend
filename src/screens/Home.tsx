@@ -1,8 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import WebView from "react-native-webview";
+import CategoryService from "../services/CategoryService";
 
 const HomeScreen = () => {
+  const categoriesService = React.useMemo(() => new CategoryService(), []);
+
+  const [categories, setCategories] = React.useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const result = await categoriesService.getAll();
+      setCategories(result);
+    };
+
+    fetchCategories();
+  }, [categoriesService]);
+
 
   return (
     <View style={styles.container}>
