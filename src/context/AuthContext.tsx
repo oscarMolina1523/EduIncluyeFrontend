@@ -1,9 +1,15 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import UserModel from '../models/UserModel';
-import UsersService from '../services/AuthService';
-import { RootStackParamList } from '../routes/Navigation';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import UserModel from "../models/UserModel";
+import UsersService from "../services/AuthService";
+import { RootStackParamList } from "../routes/Navigation";
 
 interface AuthContextProps {
   isSignedIn: boolean;
@@ -35,7 +41,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     const loadToken = async () => {
       try {
-        const storedToken = await AsyncStorage.getItem('authToken');
+        const storedToken = await AsyncStorage.getItem("authToken");
         if (storedToken) {
           setToken(storedToken);
           // Opcional: cargar user si lo guardas o fetch profile aquí
@@ -51,9 +57,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     const saveToken = async () => {
       try {
         if (token) {
-          await AsyncStorage.setItem('authToken', token);
+          await AsyncStorage.setItem("authToken", token);
         } else {
-          await AsyncStorage.removeItem('authToken');
+          await AsyncStorage.removeItem("authToken");
         }
       } catch (error) {
         console.error("Error saving token", error);
@@ -66,8 +72,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       const response = await usersService.signIn(username, password);
       setToken(response.token);
-      // setUser(response.user); // si tu backend devuelve user
-      navigation.navigate('Home');
+      await AsyncStorage.setItem("authToken", response.token); // GUARDA DIRECTAMENTE
+      console.log("Token recibido:", response);
+      console.log("Token recibido:", response.token);
+      navigation.navigate("Home");
     } catch (err) {
       console.error("Login error", err);
     }
@@ -77,8 +85,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       setUser(null);
       setToken(null);
-      await AsyncStorage.removeItem('authToken');
-      navigation.navigate('Login');
+      await AsyncStorage.removeItem("authToken");
+      navigation.navigate("Login");
     } catch (error) {
       console.error("Logout error", error);
     }
