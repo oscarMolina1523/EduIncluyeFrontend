@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, ScrollView } from "react-native";
 import WebView from "react-native-webview";
 import CategoryService from "../services/CategoryService";
+import CategoryModel from "../models/CategoryModel";
 
 const HomeScreen = () => {
   const categoriesService = React.useMemo(() => new CategoryService(), []);
 
-  const [categories, setCategories] = React.useState([]);
+  const [categories, setCategories] = React.useState<CategoryModel[]>([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -17,20 +18,67 @@ const HomeScreen = () => {
     fetchCategories();
   }, [categoriesService]);
 
+  const getEmbedUrl = (url: string, autoplay: boolean = false) => {
+    // Extrae el ID del video desde un link normal de YouTube
+    let videoId = "";
+
+    if (url.includes("youtube.com/shorts/")) {
+      videoId = url.split("youtube.com/shorts/")[1].split("?")[0];
+    } else if (url.includes("watch?v=")) {
+      videoId = url.split("watch?v=")[1].split("&")[0];
+    }
+
+    // Construye la URL embed con parámetros deseados
+    return `https://www.youtube.com/embed/${videoId}?autoplay=${
+      autoplay ? 1 : 0
+    }&mute=1&controls=1&loop=1&playlist=${videoId}`;
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Categorias</Text>
-      <View
-        style={{
-          width: "100%",
-          maxHeight: 220,
-          flex: 1,
-          flexDirection: "row",
-          gap: 12,
-        }}
-      >
-        <WebView
+    <ScrollView>
+      <View style={styles.container}>
+        <Text style={styles.title}>Categorias</Text>
+        {categories.map((cat, index) => (
+          <View
+            key={cat.id || index}
+            style={{
+              width: "100%",
+              height: 220,
+              flex: 1,
+              flexDirection: "row",
+              gap: 12,
+              marginBottom: 20, // para separar cada item
+            }}
+          >
+            <WebView
+              style={{
+                width: "100%",
+                maxHeight: "auto",
+                backgroundColor: "#fff",
+              }}
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
+              allowsInlineMediaPlayback={true}
+              mediaPlaybackRequiresUserAction={false}
+              source={{
+                uri: getEmbedUrl(cat.video, index < 3), // autoplay solo en el primer video (ejemplo)
+              }}
+            />
+            <View
+              style={{
+                maxWidth: "60%",
+                flex: 1,
+                flexDirection: "column",
+                padding: 8,
+              }}
+            >
+              <Text style={styles.subtitle}>{`${index + 1}. ${cat.name}`}</Text>
+              <Text style={{ color: "#808080" }}>{cat.description}</Text>
+            </View>
+          </View>
+        ))}
+
+        {/* <WebView
           style={{ width: "100%", maxHeight: "auto",backgroundColor: '#ffff'}}
           javaScriptEnabled={true}
           domStorageEnabled={true}
@@ -47,9 +95,9 @@ const HomeScreen = () => {
             Lenguaje de Señas, facilitando el aprendizaje de cada letra a través
             de señas claras.{" "}
           </Text>
-        </View>
+        </View> */}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
