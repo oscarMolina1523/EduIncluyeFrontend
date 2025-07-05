@@ -14,6 +14,7 @@ import { RootStackParamList } from "../routes/Navigation";
 interface AuthContextProps {
   isSignedIn: boolean;
   signIn: (username: string, password: string) => Promise<void>;
+  signUp: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   user: UserModel | null;
   token: string | null;
@@ -22,6 +23,7 @@ interface AuthContextProps {
 const AuthContext = createContext<AuthContextProps>({
   isSignedIn: false,
   signIn: async () => {},
+  signUp: async () => {}, 
   logout: () => {},
   user: null,
   token: null,
@@ -82,6 +84,20 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+   const signUp = async (username: string, email: string, password: string) => {
+    try {
+      const response = await usersService.signUp(username, email, password);
+      await AsyncStorage.setItem("authToken", response.token);
+      setToken(response.token);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Home" }],
+      });
+    } catch (err) {
+      console.error("Register error", err);
+    }
+  };
+
   const logout = async () => {
     try {
       setUser(null);
@@ -99,7 +115,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const isSignedIn = token !== null;
 
   return (
-    <AuthContext.Provider value={{ isSignedIn, signIn, logout, user, token }}>
+    <AuthContext.Provider value={{ isSignedIn, signIn, signUp, logout, user, token }}>
       {children}
     </AuthContext.Provider>
   );

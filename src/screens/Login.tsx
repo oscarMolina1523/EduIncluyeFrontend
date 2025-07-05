@@ -58,7 +58,7 @@ const LoginScreen = () => {
         />
         <Text style={styles.title}>Bienvenido a EDU-INCLUYE!</Text>
         <View>
-          <Text style={styles.text}>Usuario</Text>
+          <Text style={styles.text}>Email</Text>
           <TextInput
             keyboardType="email-address"
             style={styles.input}
