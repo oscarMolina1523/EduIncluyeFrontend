@@ -70,7 +70,7 @@ const Navigation = () => {
         name="ContentDetail"
         component={ContentDetailScreen}
         options={{
-          headerShown: false,
+          title:"Detalles de Categoria",
         }}
       />
     </Stack.Navigator>
