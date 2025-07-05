@@ -4,6 +4,7 @@ import React, {
   useState,
   useEffect,
   ReactNode,
+  useMemo,
 } from "react";
 import CategoryModel from "../models/CategoryModel";
 import CategoryService from "../services/CategoryService";
@@ -35,7 +36,7 @@ interface CategoryProviderProps {
 export const CategoryProvider = ({ children }: CategoryProviderProps) => {
   const [categories, setCategories] = useState<CategoryModel[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const categoryService = new CategoryService();
+  const categoryService = useMemo(() => new CategoryService(), []);
 
   const getAllCategories = async () => {
     setLoading(true);
