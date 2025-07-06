@@ -23,4 +23,18 @@ export default class GraduatesModel {
       image,
     );
   }
+
+  static fromJsonModel(json: any) {
+    const id = String(json["id"] || "");
+    const name = String(json["name"] || "");
+    const description = String(json["description"] || "");
+    const image = String(json["image"] || "");
+
+    return new GraduatesModel(
+      id,
+      name,
+      description,
+      image,
+    );
+  }
 }
