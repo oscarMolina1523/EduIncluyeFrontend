@@ -1,13 +1,20 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import UserModel from '../models/UserModel';
-import UsersService from '../services/AuthService';
-import { storage } from '../utils/Storage';
-import { RootStackParamList } from '../routes/Navigation';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import UserModel from "../models/UserModel";
+import UsersService from "../services/AuthService";
+import { RootStackParamList } from "../routes/Navigation";
 
 interface AuthContextProps {
   isSignedIn: boolean;
-  signIn: (data: { username: string; password: string }) => Promise<void>;
+  signIn: (username: string, password: string) => Promise<void>;
+  signUp: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   user: UserModel | null;
   token: string | null;
@@ -16,6 +23,7 @@ interface AuthContextProps {
 const AuthContext = createContext<AuthContextProps>({
   isSignedIn: false,
   signIn: async () => {},
+  signUp: async () => {}, 
   logout: () => {},
   user: null,
   token: null,
@@ -33,44 +41,81 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   useEffect(() => {
-    const loadToken = () => {
-      const storedToken = storage.getString('authToken');
-      if (storedToken) {
-        setToken(storedToken);
+    const loadToken = async () => {
+      try {
+        const storedToken = await AsyncStorage.getItem("authToken");
+        if (storedToken) {
+          setToken(storedToken);
+          // Opcional: cargar user si lo guardas o fetch profile aquí
+        }
+      } catch (error) {
+        console.error("Error loading token", error);
       }
     };
     loadToken();
   }, []);
 
   useEffect(() => {
-    if (token) {
-      storage.set('authToken', token);
-    } else {
-      storage.delete('authToken');
-    }
+    const saveToken = async () => {
+      try {
+        if (token) {
+          await AsyncStorage.setItem("authToken", token);
+        } else {
+          await AsyncStorage.removeItem("authToken");
+        }
+      } catch (error) {
+        console.error("Error saving token", error);
+      }
+    };
+    saveToken();
   }, [token]);
 
-  const signIn = async (data: { username: string; password: string }) => {
+  const signIn = async (username: string, password: string) => {
     try {
-      const response = await usersService.signIn(data.username, data.password);
-      setToken(response.token);
-      navigation.navigate('Home');
+      const response = await usersService.signIn(username, password);
+      await AsyncStorage.setItem("authToken", response.token); // Guarda primero
+      setToken(response.token); // Luego actualiza estado
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Home" }],
+      });
     } catch (err) {
-      console.error(err);
+      console.error("Login error", err);
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    storage.delete('authToken');
-    navigation.navigate('Login');
+   const signUp = async (username: string, email: string, password: string) => {
+    try {
+      const response = await usersService.signUp(username, email, password);
+      await AsyncStorage.setItem("authToken", response.token);
+      setToken(response.token);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Home" }],
+      });
+    } catch (err) {
+      console.error("Register error", err);
+    }
   };
 
-  const isSignedIn = user !== null;
+  const logout = async () => {
+    try {
+      setUser(null);
+      setToken(null);
+      await AsyncStorage.removeItem("authToken");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Login" }],
+      });
+    } catch (error) {
+      console.error("Logout error", error);
+    }
+  };
+
+  const isSignedIn = token !== null;
 
   return (
-    <AuthContext.Provider value={{ isSignedIn, signIn, logout, user, token }}>
+    <AuthContext.Provider value={{ isSignedIn, signIn, signUp, logout, user, token }}>
       {children}
     </AuthContext.Provider>
   );

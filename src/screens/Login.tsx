@@ -9,18 +9,41 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  Keyboard,
 } from "react-native";
 import { RootStackParamList } from "../routes/Navigation";
+import { useAuth } from "../context/AuthContext";
+import { useRef } from "react";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const LoginScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList, "Login">>();
 
+  const auth = useAuth();
+  const emailRef = useRef<string>("");
+  const passwordRef = useRef<string>("");
+
+  const handleLogin = async () => {
+    Keyboard.dismiss();
+    const email = emailRef.current;
+    const password = passwordRef.current;
+
+    if (!email || !password) {
+      alert("Por favor ingrese email y contraseña");
+      return;
+    }
+
+    await auth.signIn(email, password);
+  };
+
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
+    <KeyboardAwareScrollView
+    enableOnAndroid={true}
+    extraScrollHeight={20}
+    keyboardShouldPersistTaps='handled'
+    contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+  >
       <View style={styles.container}>
         <Image
           source={{
@@ -35,11 +58,13 @@ const LoginScreen = () => {
         />
         <Text style={styles.title}>Bienvenido a EDU-INCLUYE!</Text>
         <View>
-          <Text style={styles.text}>Usuario</Text>
+          <Text style={styles.text}>Email</Text>
           <TextInput
             keyboardType="email-address"
             style={styles.input}
             placeholder="ejemplo@gmail.com"
+            onChangeText={(text) => (emailRef.current = text)}
+            returnKeyType="next"
           />
         </View>
         <View>
@@ -48,10 +73,13 @@ const LoginScreen = () => {
             secureTextEntry={true}
             style={styles.input}
             placeholder="password"
+            onChangeText={(text) => (passwordRef.current = text)}
+            returnKeyType="done"
+            onSubmitEditing={handleLogin}
           />
         </View>
         <View>
-          <TouchableOpacity style={styles.button}  onPress={() => navigation.navigate("Home")}>
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={styles.buttonText}>Iniciar Sesion</Text>
           </TouchableOpacity>
         </View>
@@ -65,7 +93,7 @@ const LoginScreen = () => {
           </Text>
         </View>
       </View>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 };
 
