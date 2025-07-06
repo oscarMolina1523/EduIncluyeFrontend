@@ -44,4 +44,15 @@ export default class PodcastModel {
 
     return new PodcastModel(id, name, description, video, audio, isActive);
   }
+
+  toJsonDTO(){
+    return{
+      id: this.id,
+      name:this.name,
+      description: this.description,
+      video: this.video,
+      audio:this.audio,
+      isActive: this.isActive,
+    }
+  }
 }
