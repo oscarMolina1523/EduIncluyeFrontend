@@ -37,4 +37,13 @@ export default class GraduatesModel {
       image,
     );
   }
+
+  toJsonDTO() {
+    return {
+      id: this.id,
+      name: this.name,
+      description: this.description,
+      image: this.image,
+    };
+  }
 }
