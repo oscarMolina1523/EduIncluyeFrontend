@@ -67,6 +67,7 @@ const ResourcesScreen = () => {
             </View>
           </TouchableOpacity>
         ))}
+        <Text style={styles.title}>Podcast</Text>
       </View>
     </ScrollView>
   );
