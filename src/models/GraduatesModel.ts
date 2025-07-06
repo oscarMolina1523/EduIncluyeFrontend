@@ -10,5 +10,17 @@ export default class GraduatesModel {
     this.image = image;
   }
 
-  
+  static fromJson(json: any) {
+    const id = String(json["id"] || "");
+    const name = String(json["name"] || "");
+    const description = String(json["description"] || "");
+    const image = String(json["image"] || "");
+
+    return new GraduatesModel(
+      id,
+      name,
+      description,
+      image,
+    );
+  }
 }
