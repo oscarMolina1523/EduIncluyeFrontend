@@ -7,8 +7,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import WebView from "react-native-webview";
-import CategoryService from "../services/CategoryService";
-import CategoryModel from "../models/CategoryModel";
 import { RootStackParamList } from "../routes/Navigation";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useCategory } from "../context/CategoryContext";

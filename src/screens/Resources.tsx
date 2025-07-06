@@ -1,10 +1,74 @@
-import { View, Text, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+} from "react-native";
+import { RootStackParamList } from "../routes/Navigation";
+import { useEffect, useMemo, useState } from "react";
+import GraduatesModel from "../models/GraduatesModel";
+import GraduatesService from "../services/GraduatesService";
 
 const ResourcesScreen = () => {
+  const graduatesService = useMemo(() => new GraduatesService(), []);
+  const [graduates, setGraduates] = useState<GraduatesModel[]>([]);
+
+  useEffect(() => {
+    const getGraduates=async()=>{
+      const data= await graduatesService.getAll();
+      setGraduates(data);
+    }
+
+    getGraduates();
+  }, []);
+
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList, "Resources">>();
+
   return (
-    <View style={styles.container}>
-      <Text>this is a resource screen</Text>
-    </View>
+    <ScrollView>
+      <View style={styles.container}>
+        <Text style={styles.title}>Galeria de egresados CUR-CARAZO</Text>
+        {graduates.map((item, index) => (
+          <TouchableOpacity
+            key={item.id || index}
+            style={{
+              width: "100%",
+              height: 220,
+              flex: 1,
+              flexDirection: "row",
+              gap: 12,
+              marginBottom: 20, // para separar cada item
+            }}
+          >
+            <Image
+              source={{ uri: item.image }}
+              style={{
+                width: "40%",
+                height: 210,
+                alignItems: "center",
+                objectFit: "cover",
+              }}
+            />
+            <View
+              style={{
+                maxWidth: "60%",
+                flex: 1,
+                flexDirection: "column",
+                padding: 8,
+              }}
+            >
+              <Text style={styles.subtitle}>{`${index + 1}. ${item.name}`}</Text>
+              <Text style={{ color: "#808080" }}>{item.description}</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </ScrollView>
   );
 };
 
@@ -19,6 +83,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
     paddingHorizontal: 12,
     paddingTop: 12,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "left",
+    color: "black",
+  },
+  subtitle: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "left",
+    color: "black",
   },
 });
 
