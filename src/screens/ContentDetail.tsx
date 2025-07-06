@@ -9,6 +9,7 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
     getAllCategories();
   }, []);
   const { categoryId } = route.params;
+  
   return (
     <View style={styles.container}>
       <ScrollView
@@ -49,11 +50,10 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     backgroundColor: "#F5F5F5",
     paddingHorizontal: 12,
-    paddingTop: 12,
   },
   card: {
     width: "auto",
-    height: 60,
+    height: 40,
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
