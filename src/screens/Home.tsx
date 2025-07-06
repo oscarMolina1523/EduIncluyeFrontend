@@ -1,14 +1,45 @@
 import React, { useEffect } from "react";
-import { View, StyleSheet, Text, ScrollView, ActivityIndicator } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import WebView from "react-native-webview";
+import CategoryService from "../services/CategoryService";
+import CategoryModel from "../models/CategoryModel";
+import { RootStackParamList } from "../routes/Navigation";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useCategory } from "../context/CategoryContext";
 
-const HomeScreen = () => {
+type HomeScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "Home"
+>;
+
+const HomeScreen = ({
+  navigation,
+}: {
+  navigation: HomeScreenNavigationProp;
+}) => {
   const { categories, getAllCategories, loading } = useCategory();
 
   useEffect(() => {
     getAllCategories();
   }, []);
+  // const categoriesService = React.useMemo(() => new CategoryService(), []);
+
+  // const [categories, setCategories] = React.useState<CategoryModel[]>([]);
+
+  // useEffect(() => {
+  //   const fetchCategories = async () => {
+  //     const result = await categoriesService.getAll();
+  //     setCategories(result);
+  //   };
+
+  //   fetchCategories();
+  // }, [categoriesService]);
 
   const getEmbedUrl = (url: string, autoplay: boolean = false) => {
     // Extrae el ID del video desde un link normal de YouTube
@@ -24,22 +55,19 @@ const HomeScreen = () => {
     return `https://www.youtube.com/embed/${videoId}?autoplay=${
       autoplay ? 1 : 0
     }&mute=1&controls=1&loop=1&playlist=${videoId}`;
-    
   };
 
-   if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#339999" />
-      </View>
-    );
-  }
   return (
     <ScrollView>
       <View style={styles.container}>
         <Text style={styles.title}>Categorias</Text>
         {categories.map((cat, index) => (
-          <View
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("ContentDetail", {
+                categoryId: cat.id,
+              })
+            }
             key={cat.id || index}
             style={{
               width: "100%",
@@ -75,7 +103,7 @@ const HomeScreen = () => {
               <Text style={styles.subtitle}>{`${index + 1}. ${cat.name}`}</Text>
               <Text style={{ color: "#808080" }}>{cat.description}</Text>
             </View>
-          </View>
+          </TouchableOpacity>
         ))}
 
         {/* <WebView
