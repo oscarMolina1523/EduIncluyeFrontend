@@ -4,12 +4,15 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import { useCategory } from "../context/CategoryContext";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useLayoutEffect } from "react";
 import ContentModel from "../models/ContentModel";
 import ContentService from "../services/ContentService";
 import WebView from "react-native-webview";
+
+const { width: screenWidth } = Dimensions.get("window");
 
 const ContentDetailScreen = ({ route, navigation }: any) => {
   const { categories, getAllCategories } = useCategory();
@@ -18,22 +21,46 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
 
   const { categoryId: initialCategoryId } = route.params;
 
-  // 👇 NUEVO: estado local de categoría seleccionada
   const [selectedCategoryId, setSelectedCategoryId] = useState(initialCategoryId);
+
+  const scrollRef = useRef<ScrollView>(null);
 
   useEffect(() => {
     getAllCategories();
     handleContent(initialCategoryId);
   }, [initialCategoryId]);
 
-  const handleContent = async (id: string) => {
+  useLayoutEffect(() => {
+    // ✅ Desplazar automáticamente al render inicial
+    const index = categories.findIndex(cat => cat.id === initialCategoryId);
+    if (index >= 0) {
+      scrollToCategory(index);
+    }
+  }, [categories]);
+
+  const handleContent = async (id: string, index?: number) => {
     try {
       setSelectedCategoryId(id);
       const data = await contentService.getAll();
       const result = data.filter((item: any) => item.idCategory == id);
       setContent(result);
+
+      if (index !== undefined) {
+        scrollToCategory(index);
+      }
     } catch (error) {
       console.error("Error fetching content:", error);
+    }
+  };
+
+  const scrollToCategory = (index: number) => {
+    const itemWidth = 80 + 14; // minWidth + marginRight
+    const offsetX = index * itemWidth - (screenWidth / 2 - itemWidth / 2);
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        x: offsetX > 0 ? offsetX : 0,
+        animated: true,
+      });
     }
   };
 
@@ -55,17 +82,20 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
     <View style={styles.container}>
       {/* Categorías (fixed arriba con scroll horizontal) */}
       <ScrollView
+        ref={scrollRef}
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.categoriesContainer}
       >
-        {categories.map((cat) => {
+        {categories.map((cat, index) => {
           const isSelected = cat.id === selectedCategoryId;
           return (
             <TouchableOpacity
               key={cat.id}
-              onPress={() => handleContent(cat.id)}
-              style={styles.card}
+              onPress={() => handleContent(cat.id, index)}
+              style={[
+                styles.card,
+              ]}
             >
               <Text style={{ fontWeight: isSelected ? "bold" : "normal" }}>
                 {cat.name}
@@ -88,10 +118,7 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
       {/* Contenido (scroll vertical) */}
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {content.map((item, index) => (
-          <TouchableOpacity
-            key={item.id || index}
-            style={styles.contentItem}
-          >
+          <TouchableOpacity key={item.id || index} style={styles.contentItem}>
             <WebView
               style={styles.webview}
               javaScriptEnabled={true}
@@ -115,7 +142,7 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1, // ocupa toda la pantalla
+    // flex: 1,
     backgroundColor: "#F5F5F5",
     paddingHorizontal: 12,
     paddingTop: 12,
@@ -126,13 +153,13 @@ const styles = StyleSheet.create({
   card: {
     minWidth: 80,
     height: 40,
-    borderRadius: 8,
+    // borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
     marginRight: 14,
   },
   contentContainer: {
-    paddingBottom: 80, // espacio final para scroll cómodo
+    paddingBottom: 80,
   },
   contentItem: {
     width: "100%",
