@@ -16,15 +16,19 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
   const [content, setContent] = useState<ContentModel[]>([]);
   const contentService = useMemo(() => new ContentService(), []);
 
-  const { categoryId } = route.params;
+  const { categoryId: initialCategoryId } = route.params;
+
+  // 👇 NUEVO: estado local de categoría seleccionada
+  const [selectedCategoryId, setSelectedCategoryId] = useState(initialCategoryId);
 
   useEffect(() => {
     getAllCategories();
-    handleContent(categoryId);
-  }, [categoryId]);
+    handleContent(initialCategoryId);
+  }, [initialCategoryId]);
 
   const handleContent = async (id: string) => {
     try {
+      setSelectedCategoryId(id);
       const data = await contentService.getAll();
       const result = data.filter((item: any) => item.idCategory == id);
       setContent(result);
@@ -56,7 +60,7 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
         style={styles.categoriesContainer}
       >
         {categories.map((cat) => {
-          const isSelected = cat.id === categoryId;
+          const isSelected = cat.id === selectedCategoryId;
           return (
             <TouchableOpacity
               key={cat.id}
