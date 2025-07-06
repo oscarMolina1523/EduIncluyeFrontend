@@ -60,7 +60,16 @@ const HomeScreen = ({
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.title}>Categorias</Text>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text style={styles.title}>Categorias</Text>
+          <Text onPress={()=>{navigation.navigate("Resources")}} style={[styles.title, { color: "blue", fontSize: 20 }]}>Recursos</Text>
+        </View>
         {categories.map((cat, index) => (
           <TouchableOpacity
             onPress={() =>
