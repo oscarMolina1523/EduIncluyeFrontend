@@ -34,22 +34,27 @@ const ResourcesScreen = () => {
     };
 
     getGraduates();
+    getPodcast();
   }, []);
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList, "Resources">>();
 
-    //este embebed es para videos normales sin autoplay
-  const getEmbedUrl = (url: string) => {
+  //este embebed es para videos normales sin autoplay
+  const getEmbedUrl = (url: string, autoplay: boolean = false) => {
+    // Extrae el ID del video desde un link normal de YouTube
     let videoId = "";
 
-    if (url.includes("youtu.be/")) {
-      videoId = url.split("youtu.be/")[1].split("?")[0];
+    if (url.includes("youtube.com/shorts/")) {
+      videoId = url.split("youtube.com/shorts/")[1].split("?")[0];
     } else if (url.includes("watch?v=")) {
       videoId = url.split("watch?v=")[1].split("&")[0];
     }
 
-    return `https://www.youtube.com/embed/${videoId}`;
+    // Construye la URL embed con parámetros deseados
+    return `https://www.youtube.com/embed/${videoId}?autoplay=${
+      autoplay ? 1 : 0
+    }&mute=1&controls=1&loop=1&playlist=${videoId}`;
   };
 
   return (
@@ -94,21 +99,23 @@ const ResourcesScreen = () => {
         ))}
         <Text style={styles.title}>Podcast</Text>
         {podcast.map((item) => (
-          <WebView
-            key={item.id}
-            style={{
-              width: "100%",
-              height: 300,
-              backgroundColor: "#fff",
-            }}
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-            allowsInlineMediaPlayback={true}
-            mediaPlaybackRequiresUserAction={true}
-            source={{
-              uri: item.video,
-            }}
-          />
+          <View key={item.id}>
+            <WebView
+              style={{
+                width: "100%",
+                height: 300,
+                backgroundColor: "#fff",
+              }}
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
+              allowsInlineMediaPlayback={true}
+              mediaPlaybackRequiresUserAction={true}
+              source={{
+                uri: getEmbedUrl(item.video),
+              }}
+            />
+            <Text style={styles.title}>{item.name}</Text>
+          </View>
         ))}
         <View style={{ height: 100 }}></View>
       </View>
