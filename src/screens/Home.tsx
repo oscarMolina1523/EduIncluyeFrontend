@@ -18,15 +18,15 @@ const categoryData = [
   new CategoryModel(
     "gjvjhvkhbkH6h",
     "Señas",
-    "aprende lo mejor del mejor",
+    "Esta categoría incluye subcategorías como Familia, Saludos, Colores y Números, diseñadas para ayudarte a comunicarte de manera inclusiva y efectiva desde lo más básico hasta lo cotidiano.",
     "https://youtube.com/shorts/ltAopKpKJts?feature=share",
     "image.png",
     true
   ),
   new CategoryModel(
     "gjjhvjvkhbkH6h",
-    "Alfabeto",
-    "aprende cada letra del abecedario",
+    "Alfabeto Manual",
+    "La presente categoría pretende enseñar el alfabeto manual del Lenguaje de Señas, facilitando el aprendizaje de cada letra a través de señas claras. ",
     "https://youtube.com/shorts/efVI5k6hkvk?feature=share",
     "image.png",
     true
