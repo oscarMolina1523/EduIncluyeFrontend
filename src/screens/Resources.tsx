@@ -12,22 +12,45 @@ import { RootStackParamList } from "../routes/Navigation";
 import { useEffect, useMemo, useState } from "react";
 import GraduatesModel from "../models/GraduatesModel";
 import GraduatesService from "../services/GraduatesService";
+import WebView from "react-native-webview";
+import PodcastService from "../services/PodcastService";
+import PodcastModel from "../models/PodcastModel";
 
 const ResourcesScreen = () => {
   const graduatesService = useMemo(() => new GraduatesService(), []);
+  const podcastService = useMemo(() => new PodcastService(), []);
   const [graduates, setGraduates] = useState<GraduatesModel[]>([]);
+  const [podcast, setPodcast] = useState<PodcastModel[]>([]);
 
   useEffect(() => {
-    const getGraduates=async()=>{
-      const data= await graduatesService.getAll();
+    const getGraduates = async () => {
+      const data = await graduatesService.getAll();
       setGraduates(data);
-    }
+    };
+
+    const getPodcast = async () => {
+      const podcast = await podcastService.getAll();
+      setPodcast(podcast);
+    };
 
     getGraduates();
   }, []);
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList, "Resources">>();
+
+    //este embebed es para videos normales sin autoplay
+  const getEmbedUrl = (url: string) => {
+    let videoId = "";
+
+    if (url.includes("youtu.be/")) {
+      videoId = url.split("youtu.be/")[1].split("?")[0];
+    } else if (url.includes("watch?v=")) {
+      videoId = url.split("watch?v=")[1].split("&")[0];
+    }
+
+    return `https://www.youtube.com/embed/${videoId}`;
+  };
 
   return (
     <ScrollView>
@@ -62,12 +85,32 @@ const ResourcesScreen = () => {
                 padding: 8,
               }}
             >
-              <Text style={styles.subtitle}>{`${index + 1}. ${item.name}`}</Text>
+              <Text style={styles.subtitle}>{`${index + 1}. ${
+                item.name
+              }`}</Text>
               <Text style={{ color: "#808080" }}>{item.description}</Text>
             </View>
           </TouchableOpacity>
         ))}
         <Text style={styles.title}>Podcast</Text>
+        {podcast.map((item) => (
+          <WebView
+            key={item.id}
+            style={{
+              width: "100%",
+              height: 300,
+              backgroundColor: "#fff",
+            }}
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+            allowsInlineMediaPlayback={true}
+            mediaPlaybackRequiresUserAction={true}
+            source={{
+              uri: item.video,
+            }}
+          />
+        ))}
+        <View style={{ height: 100 }}></View>
       </View>
     </ScrollView>
   );
@@ -75,9 +118,8 @@ const ResourcesScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    height: "100%",
     flex: 1,
+    width: "100%",
     flexDirection: "column",
     textAlign: "center",
     justifyContent: "flex-start",
