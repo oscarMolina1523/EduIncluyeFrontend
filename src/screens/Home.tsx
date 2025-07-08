@@ -11,7 +11,7 @@ import WebView from "react-native-webview";
 import { RootStackParamList } from "../routes/Navigation";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useCategory } from "../context/CategoryContext";
-import Tts from "react-native-tts";
+import * as Speech from "expo-speech";
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -27,10 +27,6 @@ const HomeScreen = ({
 
   useEffect(() => {
     getAllCategories();
-
-    Tts.setDefaultLanguage("es-ES");
-    Tts.setDefaultRate(0.5);
-    Tts.setDefaultPitch(1.0);
   }, []);
   // const categoriesService = React.useMemo(() => new CategoryService(), []);
 
@@ -61,10 +57,13 @@ const HomeScreen = ({
     }&mute=1&controls=1&loop=1&playlist=${videoId}`;
   };
 
-  
   const speakDescription = (text: string) => {
-    Tts.stop(); // detiene reproducción previa
-    Tts.speak(text);
+    Speech.stop(); // Detiene reproducción previa
+    Speech.speak(text, {
+      language: "es-ES",
+      rate: 0.9,
+      pitch: 1.0,
+    });
   };
 
   return (
