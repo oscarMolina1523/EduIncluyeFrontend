@@ -6,7 +6,6 @@ import ContentDetailScreen from "../screens/ContentDetail";
 import { TouchableOpacity, View } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { useAuth } from "../context/AuthContext";
 import ResourcesScreen from "../screens/Resources";
 import ProfileScreen from "../screens/ProfileScreen";
 
@@ -20,7 +19,6 @@ export type RootStackParamList = {
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Navigation = () => {
-  const { logout } = useAuth();
   return (
     <Stack.Navigator
       screenOptions={{

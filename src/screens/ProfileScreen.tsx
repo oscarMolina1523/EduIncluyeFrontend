@@ -10,7 +10,7 @@ const ProfileScreen = ({ navigation }: any) => {
   const [image, setImage] = useState('');
   const [userId, setUserId] = useState('');
   const [userData, setUserData] = useState<any>(null);
-  const {user, signUp}= useAuth();
+  const {user, logout}= useAuth();
 
 //   useEffect(() => {
 //     const loadUserData = async () => {
@@ -77,7 +77,7 @@ const ProfileScreen = ({ navigation }: any) => {
         </TouchableOpacity>
       )} */}
 
-      <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={()=>signUp}>
+      <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={logout}>
         <Text style={styles.buttonText}>Cerrar Sesión</Text>
       </TouchableOpacity>
 
