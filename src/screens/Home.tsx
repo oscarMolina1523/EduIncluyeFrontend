@@ -12,7 +12,25 @@ import { RootStackParamList } from "../routes/Navigation";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useCategory } from "../context/CategoryContext";
 import * as Speech from "expo-speech";
-
+import CategoryModel from "../models/CategoryModel";
+const categoryData = [
+  new CategoryModel(
+    "gjvjhvkhbkH6h",
+    "Señas",
+    "aprende lo mejor del mejor",
+    "https://youtube.com/shorts/ltAopKpKJts?feature=share",
+    "image.png",
+    true
+  ),
+  new CategoryModel(
+    "gjjhvjvkhbkH6h",
+    "Alfabeto",
+    "aprende cada letra del abecedario",
+    "https://youtube.com/shorts/efVI5k6hkvk?feature=share",
+    "image.png",
+    true
+  ),
+];
 type HomeScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   "Home"
@@ -23,11 +41,11 @@ const HomeScreen = ({
 }: {
   navigation: HomeScreenNavigationProp;
 }) => {
-  const { categories, getAllCategories, loading } = useCategory();
+  // const { categories, getAllCategories, loading } = useCategory();
 
-  useEffect(() => {
-    getAllCategories();
-  }, []);
+  // useEffect(() => {
+  //   getAllCategories();
+  // }, []);
   // const categoriesService = React.useMemo(() => new CategoryService(), []);
 
   // const [categories, setCategories] = React.useState<CategoryModel[]>([]);
@@ -86,7 +104,7 @@ const HomeScreen = ({
             Recursos
           </Text>
         </View>
-        {categories.map((cat, index) => (
+        {categoryData.map((cat, index) => (
           <TouchableOpacity
             onPress={() =>
               navigation.navigate("ContentDetail", {
@@ -123,7 +141,7 @@ const HomeScreen = ({
                 flex: 1,
                 flexDirection: "column",
                 padding: 8,
-                gap: 6
+                gap: 6,
               }}
             >
               <Text style={styles.subtitle}>{`${index + 1}. ${cat.name}`}</Text>
@@ -199,7 +217,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#FFFFFF",
     fontWeight: "bold",
-    fontSize: 20
+    fontSize: 20,
   },
 });
 
