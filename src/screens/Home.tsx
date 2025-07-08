@@ -5,11 +5,13 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
+  Button,
 } from "react-native";
 import WebView from "react-native-webview";
 import { RootStackParamList } from "../routes/Navigation";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useCategory } from "../context/CategoryContext";
+import Tts from "react-native-tts";
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -25,6 +27,10 @@ const HomeScreen = ({
 
   useEffect(() => {
     getAllCategories();
+
+    Tts.setDefaultLanguage("es-ES");
+    Tts.setDefaultRate(0.5);
+    Tts.setDefaultPitch(1.0);
   }, []);
   // const categoriesService = React.useMemo(() => new CategoryService(), []);
 
@@ -55,6 +61,12 @@ const HomeScreen = ({
     }&mute=1&controls=1&loop=1&playlist=${videoId}`;
   };
 
+  
+  const speakDescription = (text: string) => {
+    Tts.stop(); // detiene reproducción previa
+    Tts.speak(text);
+  };
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -66,7 +78,14 @@ const HomeScreen = ({
           }}
         >
           <Text style={styles.title}>Categorias</Text>
-          <Text onPress={()=>{navigation.navigate("Resources")}} style={[styles.title, { color: "blue", fontSize: 20 }]}>Recursos</Text>
+          <Text
+            onPress={() => {
+              navigation.navigate("Resources");
+            }}
+            style={[styles.title, { color: "blue", fontSize: 20 }]}
+          >
+            Recursos
+          </Text>
         </View>
         {categories.map((cat, index) => (
           <TouchableOpacity
@@ -109,6 +128,10 @@ const HomeScreen = ({
             >
               <Text style={styles.subtitle}>{`${index + 1}. ${cat.name}`}</Text>
               <Text style={{ color: "#808080" }}>{cat.description}</Text>
+              <Button
+                title="Escuchar descripción"
+                onPress={() => speakDescription(cat.description)}
+              />
             </View>
           </TouchableOpacity>
         ))}
