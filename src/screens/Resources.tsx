@@ -41,20 +41,18 @@ const ResourcesScreen = () => {
     useNavigation<NativeStackNavigationProp<RootStackParamList, "Resources">>();
 
   //este embebed es para videos normales sin autoplay
-  const getEmbedUrl = (url: string, autoplay: boolean = false) => {
-    // Extrae el ID del video desde un link normal de YouTube
+  const getEmbedUrl = (url: string) => {
     let videoId = "";
 
-    if (url.includes("youtube.com/shorts/")) {
-      videoId = url.split("youtube.com/shorts/")[1].split("?")[0];
+    if (url.includes("youtu.be/")) {
+      videoId = url.split("youtu.be/")[1].split("?")[0];
     } else if (url.includes("watch?v=")) {
       videoId = url.split("watch?v=")[1].split("&")[0];
+    } else if (url.includes("youtube.com/shorts/")) {
+      videoId = url.split("youtube.com/shorts/")[1].split("?")[0];
     }
 
-    // Construye la URL embed con parámetros deseados
-    return `https://www.youtube.com/embed/${videoId}?autoplay=${
-      autoplay ? 1 : 0
-    }&mute=1&controls=1&loop=1&playlist=${videoId}`;
+    return `https://www.youtube.com/embed/${videoId}`;
   };
 
   return (
