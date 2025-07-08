@@ -11,6 +11,7 @@ import { useEffect, useMemo, useRef, useState, useLayoutEffect } from "react";
 import ContentModel from "../models/ContentModel";
 import ContentService from "../services/ContentService";
 import WebView from "react-native-webview";
+import * as Speech from "expo-speech";
 
 const { width: screenWidth } = Dimensions.get("window");
 
@@ -21,7 +22,8 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
 
   const { categoryId: initialCategoryId } = route.params;
 
-  const [selectedCategoryId, setSelectedCategoryId] = useState(initialCategoryId);
+  const [selectedCategoryId, setSelectedCategoryId] =
+    useState(initialCategoryId);
 
   const scrollRef = useRef<ScrollView>(null);
 
@@ -32,7 +34,7 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
 
   useLayoutEffect(() => {
     // ✅ Desplazar automáticamente al render inicial
-    const index = categories.findIndex(cat => cat.id === initialCategoryId);
+    const index = categories.findIndex((cat) => cat.id === initialCategoryId);
     if (index >= 0) {
       scrollToCategory(index);
     }
@@ -78,6 +80,15 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
     }&mute=1&controls=1&loop=1&playlist=${videoId}`;
   };
 
+  const speakDescription = (text: string) => {
+    Speech.stop(); // Detiene reproducción previa
+    Speech.speak(text, {
+      language: "es-ES",
+      rate: 0.9,
+      pitch: 1.0,
+    });
+  };
+
   return (
     <View style={styles.container}>
       {/* Categorías (fixed arriba con scroll horizontal) */}
@@ -93,9 +104,7 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
             <TouchableOpacity
               key={cat.id}
               onPress={() => handleContent(cat.id, index)}
-              style={[
-                styles.card,
-              ]}
+              style={[styles.card]}
             >
               <Text style={{ fontWeight: isSelected ? "bold" : "normal" }}>
                 {cat.name}
@@ -130,8 +139,16 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
               }}
             />
             <View style={styles.contentTextContainer}>
-              <Text style={styles.subtitle}>{`${index + 1}. ${item.name}`}</Text>
+              <Text style={styles.subtitle}>{`${index + 1}. ${
+                item.name
+              }`}</Text>
               <Text style={styles.description}>{item.description}</Text>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => speakDescription(item.description)}
+              >
+                <Text style={styles.buttonText}>Escuchar 🔊</Text>
+              </TouchableOpacity>
             </View>
           </TouchableOpacity>
         ))}
@@ -177,6 +194,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     padding: 8,
+    gap:6
   },
   subtitle: {
     fontSize: 14,
@@ -187,6 +205,20 @@ const styles = StyleSheet.create({
   },
   description: {
     color: "#808080",
+  },
+  button: {
+    backgroundColor: "#339999",
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    width: "100%",
+    height: 50,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 20,
   },
 });
 
