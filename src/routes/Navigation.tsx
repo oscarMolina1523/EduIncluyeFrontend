@@ -7,12 +7,14 @@ import { TouchableOpacity, View } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../context/AuthContext";
+import ResourcesScreen from "../screens/Resources";
 
 export type RootStackParamList = {
   Home: undefined;
   Login: undefined;
   Register: undefined;
   ContentDetail: { categoryId: string };
+  Resources: undefined;
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Navigation = () => {
@@ -71,6 +73,13 @@ const Navigation = () => {
         component={ContentDetailScreen}
         options={{
           title:"Detalles de Categoria",
+        }}
+      />
+      <Stack.Screen
+        name="Resources"
+        component={ResourcesScreen}
+        options={{
+          title: "Recursos",
         }}
       />
     </Stack.Navigator>
