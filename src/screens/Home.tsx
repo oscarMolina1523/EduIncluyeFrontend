@@ -123,14 +123,17 @@ const HomeScreen = ({
                 flex: 1,
                 flexDirection: "column",
                 padding: 8,
+                gap: 6
               }}
             >
               <Text style={styles.subtitle}>{`${index + 1}. ${cat.name}`}</Text>
               <Text style={{ color: "#808080" }}>{cat.description}</Text>
-              <Button
-                title="Escuchar descripción"
+              <TouchableOpacity
+                style={styles.button}
                 onPress={() => speakDescription(cat.description)}
-              />
+              >
+                <Text style={styles.buttonText}>Escuchar 🔊</Text>
+              </TouchableOpacity>
             </View>
           </TouchableOpacity>
         ))}
@@ -183,6 +186,20 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: "left",
     color: "black",
+  },
+  button: {
+    backgroundColor: "#339999",
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    width: "100%",
+    height: 50,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 20
   },
 });
 
