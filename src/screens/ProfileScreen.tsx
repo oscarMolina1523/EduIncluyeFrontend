@@ -1,66 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useMemo, useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import UserService from '../services/UserService';
+import UserModel from '../models/UserModel';
 
 const ProfileScreen = ({ navigation }: any) => {
+  const userService = useMemo(() => new UserService(), []);
   const [modalVisible, setModalVisible] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [image, setImage] = useState('');
-  const [userId, setUserId] = useState('');
-  const [userData, setUserData] = useState<any>(null);
+  // const [image, setImage] = useState('');
   const {user, logout}= useAuth();
 
-//   useEffect(() => {
-//     const loadUserData = async () => {
-//       const id = await AsyncStorage.getItem('userId');
-//       const storedRole = await AsyncStorage.getItem('userRole'); // obtener el rol
-//       if (storedRole) setRole(storedRole);
+  const handleEditProfile = async () => {
+    if (!user) return;
 
-//       if (id) {
-//         setUserId(id);
-//         const response = await getUserExtendedInfo(id);
-//         if (response.success) {
-//           const user = response.data.user;
-//           setUserData(user);
-//           setName(user.nombre);
-//           setEmail(user.email);
-//           setImage(user.fotoPerfilUrl);
-//         }
-//       }
-//     };
-//     loadUserData();
-//   }, []);
+    const updatedUser = UserModel.fromJsonModel ({
+      ...user,
+      name: name,
+      email: email,
+      isActive:true,
+    });
 
-//   const handleEditProfile = async () => {
-//     if (!userData) return;
-
-//     const updatedUser = {
-//       ...userData,
-//       nombre: name,
-//       email: email,
-//       fotoPerfilUrl: image || userData.fotoPerfilUrl,
-//     };
-
-//     const result = await updateUser(userId, updatedUser);
-//     if (result.success) {
-//       setUserData(updatedUser);
-//       setModalVisible(false);
-//     } else {
-//       console.error('Error al actualizar:', result.message);
-//     }
-//   };
-
-//   const handleLogout = async () => {
-//     await AsyncStorage.multiRemove(['userId', 'userRole', 'idToken', 'refreshToken', 'email']);
-//     navigation.navigate('Login');
-//   };
+    const result = await userService.updateUser(user.id, updatedUser);
+    if (result) {
+      setModalVisible(false);
+      Alert.alert("Éxito", "Perfil actualizado correctamente");
+      logout();
+    } else {
+      Alert.alert("Error", "No se pudo actualizar el perfil");
+    }
+  };
 
   return (
     <View style={styles.container}>
       <Image
-        source={{ uri: userData?.fotoPerfilUrl || 'https://img.freepik.com/free-photo/girl-with-long-hair-being-happy_23-2148244714.jpg?semt=ais_hybrid&w=740' }}
+        source={{ uri:'https://img.freepik.com/free-photo/girl-with-long-hair-being-happy_23-2148244714.jpg?semt=ais_hybrid&w=740' }}
         style={styles.profileImage}
       />
       <Text style={styles.name}>{user?.name}</Text>
@@ -97,13 +72,13 @@ const ProfileScreen = ({ navigation }: any) => {
               value={email}
               onChangeText={setEmail}
             />
-            <TextInput
+            {/* <TextInput
               style={styles.input}
               placeholder="Imagen"
               value={image}
               onChangeText={setImage}
-            />
-            <TouchableOpacity style={[styles.button, { width: '100%' }]} >
+            /> */}
+            <TouchableOpacity onPress={handleEditProfile} style={[styles.button, { width: '100%' }]} >
               <Text style={styles.buttonText}>Guardar</Text>
             </TouchableOpacity>
             <TouchableOpacity
