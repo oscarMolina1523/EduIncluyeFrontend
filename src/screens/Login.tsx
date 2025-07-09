@@ -10,11 +10,12 @@ import {
   KeyboardAvoidingView,
   Platform,
   Keyboard,
+  Alert,
 } from "react-native";
 import { RootStackParamList } from "../routes/Navigation";
 import { useAuth } from "../context/AuthContext";
 import { useRef } from "react";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const LoginScreen = () => {
   const navigation =
@@ -34,16 +35,23 @@ const LoginScreen = () => {
       return;
     }
 
-    await auth.signIn(email, password);
+    const result = await auth.signIn(email, password);
+
+    if (!result.success) {
+      Alert.alert(
+        "Error de inicio de sesión",
+        "Email o contraseña incorrectos"
+      );
+    }
   };
 
   return (
     <KeyboardAwareScrollView
-    enableOnAndroid={true}
-    extraScrollHeight={20}
-    keyboardShouldPersistTaps='handled'
-    contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
-  >
+      enableOnAndroid={true}
+      extraScrollHeight={20}
+      keyboardShouldPersistTaps="handled"
+      contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+    >
       <View style={styles.container}>
         <Image
           source={{

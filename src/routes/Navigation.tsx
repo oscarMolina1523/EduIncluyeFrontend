@@ -6,8 +6,8 @@ import ContentDetailScreen from "../screens/ContentDetail";
 import { TouchableOpacity, View } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { useAuth } from "../context/AuthContext";
 import ResourcesScreen from "../screens/Resources";
+import ProfileScreen from "../screens/ProfileScreen";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -15,10 +15,10 @@ export type RootStackParamList = {
   Register: undefined;
   ContentDetail: { categoryId: string };
   Resources: undefined;
+  Profile: undefined;
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Navigation = () => {
-  const { logout } = useAuth();
   return (
     <Stack.Navigator
       screenOptions={{
@@ -46,33 +46,37 @@ const Navigation = () => {
       <Stack.Screen
         name="Home"
         component={HomeScreen}
-        options={{
+        options={({ navigation }) => ({
           headerShown: true,
           title: "EDU-INCLUYE",
           headerRight: () => (
             <View
               style={{
-                marginRight: 12, // espacio del borde derecho
-                padding: 8, // área táctil cómoda
-                minWidth: 44, // tamaño mínimo recomendado por Apple/Google
+                padding: 8,
+                minWidth: 80,
                 minHeight: 44,
                 flexDirection: "row",
                 alignItems: "center",
-                justifyContent: "center",
+                justifyContent: "flex-end",
               }}
             >
-              <TouchableOpacity onPress={logout}>
-                <Ionicons name="log-out-outline" size={28} color="white" />
+              <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+                <Ionicons
+                  name="person-circle-outline"
+                  size={30}
+                  color="white"
+                />
               </TouchableOpacity>
             </View>
           ),
-        }}
+        })}
       />
+
       <Stack.Screen
         name="ContentDetail"
         component={ContentDetailScreen}
         options={{
-          title:"Detalles de Categoria",
+          title: "Detalles de Categoria",
         }}
       />
       <Stack.Screen
@@ -80,6 +84,13 @@ const Navigation = () => {
         component={ResourcesScreen}
         options={{
           title: "Recursos",
+        }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          title: "Perfil",
         }}
       />
     </Stack.Navigator>

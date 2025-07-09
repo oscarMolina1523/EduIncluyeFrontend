@@ -20,22 +20,22 @@ export default class PodcastService extends HTTPService {
     return PodcastModel.fromJson(item);
   }
 
-  async addCategory(category: PodcastModel) {
-    const body = PodcastModel.fromJsonModel(category).toJsonDTO();
+  async addPodcast(podcast: PodcastModel) {
+    const body = PodcastModel.fromJsonModel(podcast).toJsonDTO();
     const result = await super.post(`${this.path}`, body);
     if (!result) return null;
     return PodcastModel.fromJson(result);
   }
 
-  async updateCategory(id: string, category: PodcastModel) {
-    const body = PodcastModel.fromJsonModel(category).toJsonDTO();
+  async updatePodcast(id: string, podcast: PodcastModel) {
+    const body = PodcastModel.fromJsonModel(podcast).toJsonDTO();
     const json = await super.put(`${this.path}/${id}`, body);
     if (!json) return null;
 
     return PodcastModel.fromJson(json);
   }
 
-  async deleteCategory(id: string) {
+  async deletePodcast(id: string) {
     await super.delete(`${this.path}/${id}`);
   }
 }

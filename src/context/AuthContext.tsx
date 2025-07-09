@@ -10,10 +10,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserModel from "../models/UserModel";
 import UsersService from "../services/AuthService";
 import { RootStackParamList } from "../routes/Navigation";
+import { jwtDecode } from "jwt-decode";
 
 interface AuthContextProps {
   isSignedIn: boolean;
-  signIn: (username: string, password: string) => Promise<void>;
+ signIn: (username: string, password: string) => Promise<{ success: boolean; message?: string }>;
   signUp: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   user: UserModel | null;
@@ -22,8 +23,8 @@ interface AuthContextProps {
 
 const AuthContext = createContext<AuthContextProps>({
   isSignedIn: false,
-  signIn: async () => {},
-  signUp: async () => {}, 
+  signIn: async () => ({ success: false, message: "Not implemented" }),
+  signUp: async () => {},
   logout: () => {},
   user: null,
   token: null,
@@ -47,6 +48,14 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         if (storedToken) {
           setToken(storedToken);
           // Opcional: cargar user si lo guardas o fetch profile aquí
+          const decoded: any = jwtDecode(storedToken);
+          const userData = new UserModel(
+            decoded.id,
+            decoded.name,
+            decoded.email,
+            decoded.isActive
+          );
+          setUser(userData);
         }
       } catch (error) {
         console.error("Error loading token", error);
@@ -75,20 +84,41 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       const response = await usersService.signIn(username, password);
       await AsyncStorage.setItem("authToken", response.token); // Guarda primero
       setToken(response.token); // Luego actualiza estado
+      const decoded: any = jwtDecode(response.token);
+      const userData = new UserModel(
+        decoded.id,
+        decoded.name,
+        decoded.email,
+        decoded.isActive
+      );
+      setUser(userData);
       navigation.reset({
         index: 0,
         routes: [{ name: "Home" }],
       });
-    } catch (err) {
-      console.error("Login error", err);
+      return { success: true }; // ✅ devuelve success
+    } catch (err: any) {
+      // Devuelve un mensaje amigable si el backend devuelve mensaje
+      if (err.message) {
+        return { success: false, message: err.message };
+      }
+      return { success: false, message: "Ocurrió un error. Intenta de nuevo" };
     }
   };
 
-   const signUp = async (username: string, email: string, password: string) => {
+  const signUp = async (username: string, email: string, password: string) => {
     try {
       const response = await usersService.signUp(username, email, password);
       await AsyncStorage.setItem("authToken", response.token);
       setToken(response.token);
+      const decoded: any = jwtDecode(response.token);
+      const userData = new UserModel(
+        decoded.id,
+        decoded.name,
+        decoded.email,
+        decoded.isActive
+      );
+      setUser(userData);
       navigation.reset({
         index: 0,
         routes: [{ name: "Home" }],
@@ -115,7 +145,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const isSignedIn = token !== null;
 
   return (
-    <AuthContext.Provider value={{ isSignedIn, signIn, signUp, logout, user, token }}>
+    <AuthContext.Provider
+      value={{ isSignedIn, signIn, signUp, logout, user, token }}
+    >
       {children}
     </AuthContext.Provider>
   );

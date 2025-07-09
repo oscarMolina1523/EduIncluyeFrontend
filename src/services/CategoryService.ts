@@ -41,4 +41,5 @@ export default class CategoryService extends HTTPService {
   async deleteCategory(id: string) {
     await super.delete(`category/${id}`);
   }
+
 }

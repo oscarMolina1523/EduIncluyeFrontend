@@ -20,22 +20,22 @@ export default class GraduatesService extends HTTPService {
     return GraduatesModel.fromJson(item);
   }
 
-  async addCategory(category: GraduatesModel) {
-    const body = GraduatesModel.fromJsonModel(category).toJsonDTO();
+  async addGraduates(graduates: GraduatesModel) {
+    const body = GraduatesModel.fromJsonModel(graduates).toJsonDTO();
     const result = await super.post(`${this.path}`, body);
     if (!result) return null;
     return GraduatesModel.fromJson(result);
   }
 
-  async updateCategory(id: string, category: GraduatesModel) {
-    const body = GraduatesModel.fromJsonModel(category).toJsonDTO();
+  async updateGraduates(id: string, graduates: GraduatesModel) {
+    const body = GraduatesModel.fromJsonModel(graduates).toJsonDTO();
     const json = await super.put(`${this.path}/${id}`, body);
     if (!json) return null;
 
     return GraduatesModel.fromJson(json);
   }
 
-  async deleteCategory(id: string) {
+  async deleteGraduates(id: string) {
     await super.delete(`${this.path}/${id}`);
   }
 }

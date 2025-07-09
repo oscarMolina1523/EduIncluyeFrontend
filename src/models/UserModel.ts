@@ -17,4 +17,21 @@ export default class UserModel {
     const isActive = json['isActive'] !== undefined ? Boolean(json['isActive']) : false;
     return new UserModel(id, name, email, isActive);
   }
+
+  static fromJsonModel(json: any) {
+    const id = String(json['id']) || "";
+    const name = String(json['name'] || '');
+    const email = String(json['email'] || '');
+    const isActive = json['isActive'] !== undefined ? Boolean(json['isActive']) : false;
+    return new UserModel(id, name, email, isActive);
+  }
+
+  toJsonDTO() {
+    return {
+      id: this.id,
+      name: this.name,
+      email:this.email,
+      isActive: this.isActive,
+    };
+  }
 }
