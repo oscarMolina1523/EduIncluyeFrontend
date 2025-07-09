@@ -14,7 +14,7 @@ import { jwtDecode } from "jwt-decode";
 
 interface AuthContextProps {
   isSignedIn: boolean;
-  signIn: (username: string, password: string) => Promise<void>;
+ signIn: (username: string, password: string) => Promise<{ success: boolean; message?: string }>;
   signUp: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   user: UserModel | null;
@@ -23,7 +23,7 @@ interface AuthContextProps {
 
 const AuthContext = createContext<AuthContextProps>({
   isSignedIn: false,
-  signIn: async () => {},
+  signIn: async () => ({ success: false, message: "Not implemented" }),
   signUp: async () => {},
   logout: () => {},
   user: null,
@@ -96,8 +96,13 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         index: 0,
         routes: [{ name: "Home" }],
       });
-    } catch (err) {
-      console.error("Login error", err);
+      return { success: true }; // ✅ devuelve success
+    } catch (err: any) {
+      // Devuelve un mensaje amigable si el backend devuelve mensaje
+      if (err.message) {
+        return { success: false, message: err.message };
+      }
+      return { success: false, message: "Ocurrió un error. Intenta de nuevo" };
     }
   };
 
