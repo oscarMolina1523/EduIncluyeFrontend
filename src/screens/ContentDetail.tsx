@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   },
   contentItem: {
     width: "100%",
-    height: 220,
+    minHeight: 220,
     flexDirection: "row",
     gap: 12,
     marginBottom: 20,
