@@ -41,4 +41,9 @@ export default class ContentService extends HTTPService {
   async deleteCategory(id: string) {
     await super.delete(`${this.path}/${id}`);
   }
+
+  async getByCategoryId(id:string, page: number = 1, pageSize: number = 10){
+    const body={idCategoria:id, page, pageSize}
+    return await super.post(`${this.path}/contents-by-category-paginated`, body);
+  }
 }
