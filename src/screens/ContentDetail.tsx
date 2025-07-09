@@ -43,9 +43,8 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
   const handleContent = async (id: string, index?: number) => {
     try {
       setSelectedCategoryId(id);
-      const data = await contentService.getAll();
-      const result = data.filter((item: any) => item.idCategory == id);
-      setContent(result);
+      const data = await contentService.getByCategoryId(id, 1, 10);
+      setContent(data);
 
       if (index !== undefined) {
         scrollToCategory(index);
