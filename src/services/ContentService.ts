@@ -38,7 +38,7 @@ export default class ContentService extends HTTPService {
     return ContentModel.fromJson(json);
   }
 
-  async deleteCategory(id: string) {
+  async deleteContent(id: string) {
     await super.delete(`${this.path}/${id}`);
   }
 
