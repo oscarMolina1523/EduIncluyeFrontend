@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "edu-incluye-frontend",
-    "slug": "edu-incluye-frontend",
+    "slug": "eduincluye",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,6 +24,18 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c2858757-5c96-4a00-8845-987db0eb5871"
+      }
+    },
+    "owner": "oscarmolina",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c2858757-5c96-4a00-8845-987db0eb5871"
     }
   }
 }
