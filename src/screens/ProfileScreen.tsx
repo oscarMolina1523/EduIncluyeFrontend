@@ -35,7 +35,7 @@ const ProfileScreen = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
       <Image
-        source={{ uri:'https://img.freepik.com/free-photo/girl-with-long-hair-being-happy_23-2148244714.jpg?semt=ais_hybrid&w=740' }}
+        source={{ uri: user?.image ?? 'https://img.freepik.com/free-photo/girl-with-long-hair-being-happy_23-2148244714.jpg?semt=ais_hybrid&w=740' }}
         style={styles.profileImage}
       />
       <Text style={styles.name}>{user?.name}</Text>

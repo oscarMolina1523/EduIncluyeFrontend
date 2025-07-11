@@ -53,6 +53,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             decoded.id,
             decoded.name,
             decoded.email,
+            decoded.image,
             decoded.isActive
           );
           setUser(userData);
@@ -89,6 +90,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         decoded.id,
         decoded.name,
         decoded.email,
+        decoded.image,
         decoded.isActive
       );
       setUser(userData);
@@ -116,6 +118,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         decoded.id,
         decoded.name,
         decoded.email,
+        decoded.image,
         decoded.isActive
       );
       setUser(userData);
