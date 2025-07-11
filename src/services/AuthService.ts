@@ -6,7 +6,7 @@ export default class AuthService extends HTTPService {
     const body = { email: email, password: password };
     const json = await this.post("auth/login", body);
     console.log("Token plano recibido en AuthService.signIn:", json);
-    return new TokenModel(json);
+    return new TokenModel(json.token);
   }
 
   async signUp(username: string, newemail: string, newpassword: string) {
