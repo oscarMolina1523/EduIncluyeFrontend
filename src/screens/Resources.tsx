@@ -64,11 +64,12 @@ const ResourcesScreen = () => {
             key={item.id || index}
             style={{
               width: "100%",
-              height: 220,
+              minHeight: 220,
               flex: 1,
               flexDirection: "row",
               gap: 12,
               marginBottom: 20, // para separar cada item
+              
             }}
           >
             <Image
@@ -77,7 +78,7 @@ const ResourcesScreen = () => {
                 width: "40%",
                 height: 210,
                 alignItems: "center",
-                objectFit: "cover",
+                objectFit: "contain",
               }}
             />
             <View
