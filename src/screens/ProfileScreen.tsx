@@ -9,7 +9,7 @@ const ProfileScreen = ({ navigation }: any) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  // const [image, setImage] = useState('');
+  const [image, setImage] = useState('');
   const {user, logout}= useAuth();
 
   const handleEditProfile = async () => {
@@ -19,6 +19,7 @@ const ProfileScreen = ({ navigation }: any) => {
       ...user,
       name: name,
       email: email,
+      image:image,
       isActive:true,
     });
 
@@ -72,12 +73,12 @@ const ProfileScreen = ({ navigation }: any) => {
               value={email}
               onChangeText={setEmail}
             />
-            {/* <TextInput
+            <TextInput
               style={styles.input}
               placeholder="Imagen"
               value={image}
               onChangeText={setImage}
-            /> */}
+            />
             <TouchableOpacity onPress={handleEditProfile} style={[styles.button, { width: '100%' }]} >
               <Text style={styles.buttonText}>Guardar</Text>
             </TouchableOpacity>
