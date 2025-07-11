@@ -130,18 +130,33 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
     }
   };
 
-  const getEmbedUrl = (url: string, autoplay: boolean = false) => {
+  //this is more complicated, use only if you need autoplay
+  // const getEmbedUrl = (url: string, autoplay: boolean = false) => {
+  //   let videoId = "";
+
+  //   if (url.includes("youtube.com/shorts/")) {
+  //     videoId = url.split("youtube.com/shorts/")[1].split("?")[0];
+  //   } else if (url.includes("watch?v=")) {
+  //     videoId = url.split("watch?v=")[1].split("&")[0];
+  //   }
+
+  //   return `https://www.youtube.com/embed/${videoId}?autoplay=${
+  //     autoplay ? 1 : 0
+  //   }&mute=1&controls=1&loop=1&playlist=${videoId}`;
+  // };
+
+   const getEmbedUrl = (url: string) => {
     let videoId = "";
 
-    if (url.includes("youtube.com/shorts/")) {
-      videoId = url.split("youtube.com/shorts/")[1].split("?")[0];
+    if (url.includes("youtu.be/")) {
+      videoId = url.split("youtu.be/")[1].split("?")[0];
     } else if (url.includes("watch?v=")) {
       videoId = url.split("watch?v=")[1].split("&")[0];
+    } else if (url.includes("youtube.com/shorts/")) {
+      videoId = url.split("youtube.com/shorts/")[1].split("?")[0];
     }
 
-    return `https://www.youtube.com/embed/${videoId}?autoplay=${
-      autoplay ? 1 : 0
-    }&mute=1&controls=1&loop=1&playlist=${videoId}`;
+    return `https://www.youtube.com/embed/${videoId}`;
   };
 
   const speakDescription = (text: string) => {
@@ -191,7 +206,11 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
       {/* Contenido (scroll vertical) */}
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {content.map((item, index) => (
-          <TouchableOpacity key={`${item.id ?? "no-id"}-${index}`} style={styles.contentItem}>
+          <TouchableOpacity  onPress={() =>
+              navigation.navigate("SingleContent", {
+                contentId: item.id,
+              })
+            } key={`${item.id ?? "no-id"}-${index}`} style={styles.contentItem}>
             <WebView
               style={styles.webview}
               javaScriptEnabled={true}
@@ -199,7 +218,7 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
               allowsInlineMediaPlayback={true}
               mediaPlaybackRequiresUserAction={false}
               source={{
-                uri: getEmbedUrl(item.video, index < 3),
+                uri: getEmbedUrl(item.video),
               }}
             />
             <View style={styles.contentTextContainer}>
