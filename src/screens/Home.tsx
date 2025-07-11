@@ -16,7 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 const categoryData = [
   new CategoryModel(
-    "gjvjhvkhbkH6h",
+    "3feeJMkg28UENwrghNTx",
     "Señas",
     "Esta categoría incluye subcategorías como Familia, Saludos, Colores y Números, diseñadas para ayudarte a comunicarte de manera inclusiva y efectiva desde lo más básico hasta lo cotidiano.",
     "https://youtube.com/shorts/ltAopKpKJts?feature=share",
@@ -24,7 +24,7 @@ const categoryData = [
     true
   ),
   new CategoryModel(
-    "gjjhvjvkhbkH6h",
+    "mE00EQw5RrKVBbhCKcTL",
     "Alfabeto Manual",
     "La presente categoría pretende enseñar el alfabeto manual del Lenguaje de Señas, facilitando el aprendizaje de cada letra a través de señas claras. ",
     "https://youtube.com/shorts/efVI5k6hkvk?feature=share",

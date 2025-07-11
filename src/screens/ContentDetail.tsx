@@ -13,9 +13,51 @@ import ContentService from "../services/ContentService";
 import WebView from "react-native-webview";
 import * as Speech from "expo-speech";
 
+const dayOrder = [
+  "lunes",
+  "martes",
+  "miércoles",
+  "miercoles",
+  "jueves",
+  "viernes",
+  "sábado",
+  "sabado",
+  "domingo",
+];
+
+function dynamicSort(a: string, b: string) {
+  const aLower = a.toLowerCase();
+  const bLower = b.toLowerCase();
+
+  // 1) Intentar ordenar como números
+  const aNum = Number(aLower);
+  const bNum = Number(bLower);
+  const aIsNum = !isNaN(aNum);
+  const bIsNum = !isNaN(bNum);
+
+  if (aIsNum && bIsNum) {
+    return aNum - bNum;
+  }
+
+  // 2) Intentar ordenar como días de la semana
+  const aDayIndex = dayOrder.indexOf(aLower);
+  const bDayIndex = dayOrder.indexOf(bLower);
+
+  if (aDayIndex !== -1 && bDayIndex !== -1) {
+    return aDayIndex - bDayIndex;
+  }
+  if (aDayIndex !== -1) return -1; // días antes que texto general
+  if (bDayIndex !== -1) return 1;
+
+  // 3) Orden alfabético general
+  return a.localeCompare(b, "es", { sensitivity: "base" });
+}
+
 const { width: screenWidth } = Dimensions.get("window");
 
 const ContentDetailScreen = ({ route, navigation }: any) => {
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const { categories, getAllCategories } = useCategory();
   const [content, setContent] = useState<ContentModel[]>([]);
   const contentService = useMemo(() => new ContentService(), []);
@@ -40,11 +82,29 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
     }
   }, [categories]);
 
-  const handleContent = async (id: string, index?: number) => {
+  const handleContent = async (
+    id: string,
+    pageToLoad = 1,
+    isLoadMore = false,
+    index?: number
+  ) => {
     try {
+      if (!isLoadMore) {
+        setPage(1);
+        setContent([]);
+        setHasMore(true);
+      }
       setSelectedCategoryId(id);
       const data = await contentService.getByCategoryId(id, 1, 10);
+      data.sort((x: any, y: any) => dynamicSort(x.name, y.name));
       setContent(data);
+
+      if (data.length < 10) {
+        setHasMore(false); // no hay más páginas
+      }
+
+      setContent((prev) => (isLoadMore ? [...prev, ...data] : data));
+      setPage(pageToLoad);
 
       if (index !== undefined) {
         scrollToCategory(index);
@@ -52,6 +112,11 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
     } catch (error) {
       console.error("Error fetching content:", error);
     }
+  };
+
+  const loadMore = () => {
+    const nextPage = page + 1;
+    handleContent(selectedCategoryId, nextPage, true);
   };
 
   const scrollToCategory = (index: number) => {
@@ -65,18 +130,33 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
     }
   };
 
-  const getEmbedUrl = (url: string, autoplay: boolean = false) => {
+  //this is more complicated, use only if you need autoplay
+  // const getEmbedUrl = (url: string, autoplay: boolean = false) => {
+  //   let videoId = "";
+
+  //   if (url.includes("youtube.com/shorts/")) {
+  //     videoId = url.split("youtube.com/shorts/")[1].split("?")[0];
+  //   } else if (url.includes("watch?v=")) {
+  //     videoId = url.split("watch?v=")[1].split("&")[0];
+  //   }
+
+  //   return `https://www.youtube.com/embed/${videoId}?autoplay=${
+  //     autoplay ? 1 : 0
+  //   }&mute=1&controls=1&loop=1&playlist=${videoId}`;
+  // };
+
+   const getEmbedUrl = (url: string) => {
     let videoId = "";
 
-    if (url.includes("youtube.com/shorts/")) {
-      videoId = url.split("youtube.com/shorts/")[1].split("?")[0];
+    if (url.includes("youtu.be/")) {
+      videoId = url.split("youtu.be/")[1].split("?")[0];
     } else if (url.includes("watch?v=")) {
       videoId = url.split("watch?v=")[1].split("&")[0];
+    } else if (url.includes("youtube.com/shorts/")) {
+      videoId = url.split("youtube.com/shorts/")[1].split("?")[0];
     }
 
-    return `https://www.youtube.com/embed/${videoId}?autoplay=${
-      autoplay ? 1 : 0
-    }&mute=1&controls=1&loop=1&playlist=${videoId}`;
+    return `https://www.youtube.com/embed/${videoId}`;
   };
 
   const speakDescription = (text: string) => {
@@ -126,7 +206,11 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
       {/* Contenido (scroll vertical) */}
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {content.map((item, index) => (
-          <TouchableOpacity key={item.id || index} style={styles.contentItem}>
+          <TouchableOpacity  onPress={() =>
+              navigation.navigate("SingleContent", {
+                contentId: item.id,
+              })
+            } key={`${item.id ?? "no-id"}-${index}`} style={styles.contentItem}>
             <WebView
               style={styles.webview}
               javaScriptEnabled={true}
@@ -134,7 +218,7 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
               allowsInlineMediaPlayback={true}
               mediaPlaybackRequiresUserAction={false}
               source={{
-                uri: getEmbedUrl(item.video, index < 3),
+                uri: getEmbedUrl(item.video),
               }}
             />
             <View style={styles.contentTextContainer}>
@@ -151,6 +235,11 @@ const ContentDetailScreen = ({ route, navigation }: any) => {
             </View>
           </TouchableOpacity>
         ))}
+        {hasMore && (
+          <TouchableOpacity style={styles.loadMoreButton} onPress={loadMore}>
+            <Text style={styles.loadMoreButtonText}>Cargar más</Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </View>
   );
@@ -193,7 +282,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     padding: 8,
-    gap:6
+    gap: 6,
   },
   subtitle: {
     fontSize: 14,
@@ -218,6 +307,18 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontWeight: "bold",
     fontSize: 20,
+  },
+  loadMoreButton: {
+    backgroundColor: "#007BFF",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  loadMoreButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

@@ -8,12 +8,14 @@ import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import ResourcesScreen from "../screens/Resources";
 import ProfileScreen from "../screens/ProfileScreen";
+import SingleContentScreen from "../screens/SingleContent";
 
 export type RootStackParamList = {
   Home: undefined;
   Login: undefined;
   Register: undefined;
   ContentDetail: { categoryId: string };
+  SingleContent: { contentId: string };
   Resources: undefined;
   Profile: undefined;
 };
@@ -77,6 +79,13 @@ const Navigation = () => {
         component={ContentDetailScreen}
         options={{
           title: "Detalles de Categoria",
+        }}
+      />
+      <Stack.Screen
+        name="SingleContent"
+        component={SingleContentScreen}
+        options={{
+          title: "Aprendiendo",
         }}
       />
       <Stack.Screen
