@@ -6,7 +6,7 @@
 
 ###
 
-<h2 align="left">Herramientas</h2>
+<h2 align="left">Herramientas y tecnologias usadas</h2>
 
 ###
 
