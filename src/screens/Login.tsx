@@ -64,7 +64,7 @@ const LoginScreen = () => {
             objectFit: "contain",
           }}
         />
-        <Text style={styles.title}>Bienvenido a EDU-INCLUYE!</Text>
+        <Text style={styles.title}>¡Bienvenido a EDU-INCLUYE!</Text>
         <View>
           <Text style={styles.text}>Email</Text>
           <TextInput

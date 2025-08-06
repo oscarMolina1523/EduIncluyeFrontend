@@ -63,7 +63,7 @@ const RegisterScreen = () => {
             objectFit: "contain",
           }}
         /> */}
-        <Text style={styles.title}>Bienvenido a EDU-INCLUYE!</Text>
+        <Text style={styles.title}>¡Bienvenido a EDU-INCLUYE!</Text>
         <View>
           <Text style={styles.text}>Nombre de Usuario</Text>
           <TextInput
