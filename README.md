@@ -2,7 +2,7 @@
 
 ###
 
-<p align="left">App mobile que promueve el lenguaje inclusivo (Lenguaje de señas), a través de contenido digital (videos, imagenes, texto, audios) para facilitar su comprension y aprendizaje, para visualizar la app debe tener instalada la app de EXPO.<br><br>El backend se encuentra en la siguiente dirección de repositorio --> https://github.com/oscarMolina1523/EduIncluyeBackend</p>
+<p align="left">App mobile que promueve el lenguaje inclusivo (Lenguaje de señas), a través de contenido digital (videos, imagenes, texto, audios) para facilitar su comprension y aprendizaje, para visualizar la app debe tener instalada la app de EXPO en su dispositivo mobile.<br><br>El backend se encuentra en la siguiente dirección de repositorio --> https://github.com/oscarMolina1523/EduIncluyeBackend</p>
 
 ###
 
