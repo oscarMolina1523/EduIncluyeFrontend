@@ -16,18 +16,18 @@ import { Ionicons } from "@expo/vector-icons";
 
 const categoryData = [
   new CategoryModel(
-    "3feeJMkg28UENwrghNTx",
-    "Señas",
-    "Esta categoría incluye subcategorías como Familia, Saludos, Colores y Números, diseñadas para ayudarte a comunicarte de manera inclusiva y efectiva desde lo más básico hasta lo cotidiano.",
-    "https://youtube.com/shorts/ltAopKpKJts?feature=share",
-    "image.png",
-    true
-  ),
-  new CategoryModel(
     "mE00EQw5RrKVBbhCKcTL",
     "Alfabeto Manual",
     "La presente categoría pretende enseñar el alfabeto manual del Lenguaje de Señas, facilitando el aprendizaje de cada letra a través de señas claras. ",
     "https://youtube.com/shorts/efVI5k6hkvk?feature=share",
+    "image.png",
+    true
+  ),
+  new CategoryModel(
+    "3feeJMkg28UENwrghNTx",
+    "Señas",
+    "Esta categoría incluye subcategorías como Familia, Saludos, Colores y Números, diseñadas para ayudarte a comunicarte de manera inclusiva y efectiva desde lo más básico hasta lo cotidiano.",
+    "https://youtube.com/shorts/ltAopKpKJts?feature=share",
     "image.png",
     true
   ),
@@ -91,7 +91,7 @@ const HomeScreen = ({
         </View>
 
         <View style={styles.header}>
-          <Text style={styles.title}>Categorias</Text>
+          <Text style={styles.title}>Categorías</Text>
           <Text
             onPress={() => navigation.navigate("Resources")}
             style={[styles.title, { color: "blue", fontSize: 20 }]}
