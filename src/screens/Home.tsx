@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -10,6 +10,7 @@ import {
 import WebView from "react-native-webview";
 import { RootStackParamList } from "../routes/Navigation";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useFocusEffect } from "@react-navigation/native"; // 👈 Import agregado
 import * as Speech from "expo-speech";
 import CategoryModel from "../models/CategoryModel";
 import { Ionicons } from "@expo/vector-icons";
@@ -46,6 +47,16 @@ const HomeScreen = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCategories, setFilteredCategories] = useState(categoryData);
 
+  // 🔄 Estado para forzar recarga de WebView
+  const [reloadKey, setReloadKey] = useState(0);
+
+  // Cada vez que la pantalla tenga foco, incrementamos el key
+  useFocusEffect(
+    useCallback(() => {
+      setReloadKey((prev) => prev + 1);
+    }, [])
+  );
+
   useEffect(() => {
     const filtered = categoryData.filter((cat) =>
       cat.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -79,7 +90,7 @@ const HomeScreen = ({
   return (
     <ScrollView>
       <View style={styles.container}>
-        {/* 🔍 Search bar con icono */}
+        {/* 🔍 Search bar */}
         <View style={styles.searchContainer}>
           <Ionicons name="search" size={20} color="#888" style={styles.icon} />
           <TextInput
@@ -112,6 +123,7 @@ const HomeScreen = ({
             style={styles.card}
           >
             <WebView
+              key={`${reloadKey}-${cat.id}`} // 👈 Recarga WebView al volver
               style={styles.webview}
               javaScriptEnabled={true}
               domStorageEnabled={true}
