@@ -57,27 +57,23 @@
 <p align="left">Primero debes tener expo en tu telefono para poder visualizar la app mediante codigo qr que se creara.</p>
 
 ###
+```bash
+#Primero debe correr los siguientes comandos en la terminal
+git clone https://github.com/oscarMolina1523/EduIncluyeFrontend.git
 
-<p align="left">1.Primero debe correr los siguientes comandos en la terminal: <br><br>git clone https://github.com/oscarMolina1523/EduIncluyeFrontend.git</p>
+#A continuación entrar al proyecto
+cd EduIncluyeFrontend
 
-###
+#proceder a ejecutar el comando para instalar las dependencias
+npm install
 
-<p align="left">2.A continuación entrar al proyecto:<br><br>cd EduIncluyeFrontend</p>
+#abrir el proyecto en tu IDE de preferencia en este caso VISUAL STUDIO CODE el cual usa el siguiente comando
+code .
 
-###
+#Ejecutar el comando
+npx expo start
 
-<p align="left">3.proceder a ejecutar el comando para instalar las dependencias:<br><br>npm install</p>
-
-###
-
-<p align="left">4.abrir el proyecto en tu IDE de preferencia en este caso VISUAL STUDIO CODE el cual usa el siguiente comando:<br><br>code .</p>
-
-###
-
-<p align="left">5.Ejecutar el comando:<br><br>npx expo start</p>
-
-###
-
+```
 <h2 align="left">Autor</h2>
 
 ###
